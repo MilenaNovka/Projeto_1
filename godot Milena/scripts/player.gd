@@ -1,9 +1,12 @@
 extends Area2D
 
 const SPEED := 400
+@onready var anim = $anim
+@onready var collision = $collision
+@onready var screen_size = get_viewport_rect().size
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -13,4 +16,19 @@ func _process(delta):
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * SPEED
 		
+	if velocity.x != 0:
+		anim.play("move")
+	elif velocity.y > 0:
+		anim.play("move_down")
+	elif velocity.y < 0:
+		anim.play("move_up")
+	else:
+		anim.play("idle")
+		 
+	if velocity.x > 0:
+		anim.flip_h = false
+	else:
+		anim.flip_h = true
+	
 	position += velocity * delta
+	position = position.clamp(Vector2.ZERO, screen_size)
